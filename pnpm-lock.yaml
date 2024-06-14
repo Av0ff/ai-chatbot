@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@huggingface/inference':
+    specifier: ^2.7.0
+    version: 2.7.0
   '@radix-ui/react-alert-dialog':
     specifier: ^1.0.5
     version: 1.0.5(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
@@ -304,6 +307,17 @@ packages:
 
   /@floating-ui/utils@0.2.1:
     resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
+    dev: false
+
+  /@huggingface/inference@2.7.0:
+    resolution: {integrity: sha512-u7Fn637Q3f7nUB1tajM4CgzhvoFQkOQr5W5Fm+2wT9ETgGoLBh25BLlYPTJRjAd2WY01s71v0lqAwNvHHCc3mg==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@huggingface/tasks': 0.10.14
+    dev: false
+
+  /@huggingface/tasks@0.10.14:
+    resolution: {integrity: sha512-8Q3aqTO+ldTTqtK4OfMz/h5DiiMBzUnZKdV0Dq2+JX+UXvqnTDVOk+bJd0QVytJYyNeZgKsj7XQHvEQGyo9cFg==}
     dev: false
 
   /@humanwhocodes/config-array@0.11.14:
