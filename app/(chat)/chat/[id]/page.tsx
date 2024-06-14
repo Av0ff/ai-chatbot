@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { getChat } from '@/app/actions'
 import { Chat } from '@/components/chat'
+//import Completion from '@/components/chat'
 
 export interface ChatPageProps {
   params: {
@@ -44,4 +45,5 @@ export default async function ChatPage({ params }: ChatPageProps) {
   }
 
   return <Chat id={chat.id} initialMessages={chat.messages} />
+  //return <Completion id={chat.id} initialMessages={chat.messages} />
 }
