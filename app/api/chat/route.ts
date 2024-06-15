@@ -28,13 +28,14 @@ function buildPrompt(messages: Message[]) {
   );
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Check the request method
+// Обработчик API-маршрута
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  // Проверка метода запроса
   if (req.method!== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  // Extract the `messages` from the body of the request
+  // Извлечение `messages` из тела запроса
   const { messages }: { messages: Message[] } = req.body;
 
   try {
@@ -52,7 +53,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
-}
+};
+
+export default handler;
+
+// export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+//   // Check the request method
+//   if (req.method!== 'POST') {
+//     return res.status(405).json({ message: 'Method Not Allowed' });
+//   }
+
+//   // Extract the `messages` from the body of the request
+//   const { messages }: { messages: Message[] } = req.body;
+
+//   try {
+//     const response = await Hf.textGenerationStream({
+//       model: 'Avin0ff/distilgpt2QACode',
+//       messages: [{ content: buildPrompt(messages) }],
+//     });
+
+//     // Конвертация ответа в строку
+//     const result = response.toString();
+
+//     // Отправка результата в ответе
+//     res.status(200).send(result);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// }
 
 
 // import { HfInference } from '@huggingface/inference'
