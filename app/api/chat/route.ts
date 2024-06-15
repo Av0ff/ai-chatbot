@@ -1,46 +1,105 @@
-import { HfInference } from '@huggingface/inference'
-import { HuggingFaceStream, StreamingTextResponse } from 'ai'
+import { HfInference } from '@huggingface/inference';
+import { HuggingFaceStream, StreamingTextResponse } from 'ai';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 // Create a new HuggingFace Inference instance
-const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY)
+const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
-// IMPORTANT! Set the runtime to edge
-export const runtime = 'edge'
+// IMPORTANT Set the runtime to edge
+export const runtime = 'edge';
+
+type Message = {
+  content: string;
+  role: 'user' | 'assistant';
+};
 
 // Build a prompt from the messages
-function buildPompt(
-  messages: { content: string; role: 'system' | 'user' | 'assistant' }[]
-) {
+function buildPrompt(messages: Message[]) {
   return (
     messages
-      .map(({ content, role }) => {
+     .map(({content, role}) => {
         if (role === 'user') {
-          return `<|prompter|>${content}<|endoftext|>`
+          return `<|prompter|>${content}<|endoftext|>`;
         } else {
-          return `<|assistant|>${content}<|endoftext|>`
+          return `<|assistant|>${content}<|endoftext|>`;
         }
       })
-      .join('') + '<|assistant|>'
-  )
+     .join('') + '<|assistant|>'
+  );
 }
 
-export async function POST(req: Request) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Check the request method
+  if (req.method!== 'POST') {
+    return res.status(405).json({ message: 'Method Not Allowed' });
+  }
+
   // Extract the `messages` from the body of the request
-  const { messages } = await req.json()
+  const { messages }: { messages: Message[] } = req.body;
 
-  const response = await Hf.textGenerationStream({
-    model: 'Avin0ff/distilgpt2QACode',
-    messages: [{
-      content: buildPompt(messages)
-    }],
-  })
+  try {
+    const response = await Hf.textGenerationStream({
+      model: 'Avin0ff/distilgpt2QACode',
+      messages: [{ content: buildPrompt(messages) }],
+    });
 
-  // Convert the response into a friendly text-stream
-  const stream = HuggingFaceStream(response)
+    // Конвертация ответа в строку
+    const result = response.toString();
 
-  // Respond with the stream
-  return new StreamingTextResponse(stream)
+    // Отправка результата в ответе
+    res.status(200).send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 }
+
+
+// import { HfInference } from '@huggingface/inference'
+// import { HuggingFaceStream, StreamingTextResponse } from 'ai'
+
+// // Create a new HuggingFace Inference instance
+// const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY)
+
+// // IMPORTANT! Set the runtime to edge
+// export const runtime = 'edge'
+
+// // Build a prompt from the messages
+// function buildPompt(
+//   messages: { content: string; role: 'system' | 'user' | 'assistant' }[]
+// ) {
+//   return (
+//     messages
+//       .map(({ content, role }) => {
+//         if (role === 'user') {
+//           return `<|prompter|>${content}<|endoftext|>`
+//         } else {
+//           return `<|assistant|>${content}<|endoftext|>`
+//         }
+//       })
+//       .join('') + '<|assistant|>'
+//   )
+// }
+
+// export async function POST(req: Request) {
+//   // Extract the `messages` from the body of the request
+//   const { messages } = await req.json()
+
+//   const response = await Hf.textGenerationStream({
+//     model: 'Avin0ff/distilgpt2QACode',
+//     messages: [{
+//       content: buildPompt(messages)
+//     }],
+//   })
+
+//   // Convert the response into a friendly text-stream
+//   const stream = HuggingFaceStream(response)
+
+//   // Respond with the stream
+//   return new StreamingTextResponse(stream)
+// }
+
+
 // import OpenAI from 'openai';
 // import { OpenAIStream, StreamingTextResponse } from 'ai';
  
