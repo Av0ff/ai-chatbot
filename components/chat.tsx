@@ -61,7 +61,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
                 role: message.role,
                 content: message.content,
               })) || ['kavo'];
-              append(newMessages);
+              // Check if the new messages are the same as the last message
+              if (JSON.stringify(newMessages) !== JSON.stringify(messages[messages.length - 1])) {
+                append(newMessages);
+              }
             } catch (error) {
               console.error("Failed to parse response:", error);
             }

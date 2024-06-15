@@ -35,7 +35,8 @@ export async function POST(request: Request) {
     const { messages }: { messages: Message[] } = await request.json();
 
     const response = await Hf.textGenerationStream({
-      model: 'Avin0ff/distilgpt2QACode',
+      //model: 'Avin0ff/distilgpt2QACode',
+      model: 'IlyaGusev/saiga_mistral_7b_gguf',
       messages: [{ content: buildPrompt(messages) }],
     });
 
