@@ -35,18 +35,21 @@ export async function POST(request: Request) {
     const { messages }: { messages: Message[] } = await request.json();
 
     const prompt = buildPrompt(messages);
-    const response = await Hf.textGeneration({
+    const response = await Hf.textGenerationStream({
       model: 'IlyaGusev/saiga_mistral_7b_gguf',
-      prompt: prompt,
-      max_length: 2048,
-      temperature: 0.7, // Adjust the temperature parameter as needed
-      top_p: 0.9, // Adjust the top_p parameter as needed
+      inputs: prompt,
+      parameters: {
+        max_length: 2048,
+        temperature: 0.7, // Adjust the temperature parameter as needed
+        top_p: 0.9, // Adjust the top_p parameter as needed
+      },
     });
 
-    // Convert the response to a string
-    const result = response.text;
+    // Convert the response into a friendly text-stream
+    const stream = HuggingFaceStream(response);
 
-    return NextResponse.json(result);
+    // Respond with the stream
+    return new StreamingTextResponse(stream);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
