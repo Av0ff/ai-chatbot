@@ -23,6 +23,7 @@ import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCompletion } from 'ai/react';
 
+
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -33,50 +34,91 @@ export interface CompletionProps{
   initialMessages?: Message[]
 }
 
-export function Chat({ id, initialMessages, className }: ChatProps) {
-  const router = useRouter()
-  const path = usePathname()
-  const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
-    'ai-token',
-    null
-  )
-  const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
-  const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
-  const { messages, append, reload, stop, isLoading, input, setInput } =
-    useChat({
-      initialMessages: [],
+// export function Chat({ id, initialMessages, className }: ChatProps) {
+//   const router = useRouter()
+//   const path = usePathname()
+//   const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
+//     'ai-token',
+//     null
+//   )
+//   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
+//   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
+//   const { messages, append, reload, stop, isLoading, input, setInput } =
+//     useChat({
+//       initialMessages: [],
+//       id,
+//       body: {
+//         id,
+//         previewToken
+//       },
+//       onResponse(response) {
+//         if (response.status === 401) {
+//           toast.error(response.statusText)
+//         } else {
+//           response.text().then((text) => {
+//             try {
+//               const data = JSON.parse(text);
+//               const newMessages = data.messages?.map((message: any) => ({
+//                 role: message.role,
+//                 content: message.content,
+//               })) || ['kavo'];
+//               // Check if the new messages are the same as the last message
+//               if (JSON.stringify(newMessages) !== JSON.stringify(messages[messages.length - 1])) {
+//                 append(newMessages);
+//               }
+//             } catch (error) {
+//               console.error("Failed to parse response:", error);
+//             }
+//           });
+//         }
+//       },
+//       onFinish() {
+//         if (!path.includes('chat')) {
+//           window.history.pushState({}, '', `/chat/${id}`)
+//         }
+//       }
+//     })
+const Chat = ({ id, initialMessages, className }: ChatProps) => {
+  const path = usePathname();
+  const [messages, setMessages] = useState(initialMessages ?? []);
+  const [input, setInput] = useState('');
+  const [response, setResponse] = useState(null);
+  const [previewToken, setPreviewToken] = useState(null); 
+
+  const { append, reload, stop, isLoading } = useChat({
+    initialMessages: initialMessages,
+    id,
+    body: {
       id,
-      body: {
-        id,
-        previewToken
-      },
-      onResponse(response) {
-        if (response.status === 401) {
-          toast.error(response.statusText)
-        } else {
-          response.text().then((text) => {
-            try {
-              const data = JSON.parse(text);
-              const newMessages = data.messages?.map((message: any) => ({
-                role: message.role,
-                content: message.content,
-              })) || ['kavo'];
-              // Check if the new messages are the same as the last message
-              if (JSON.stringify(newMessages) !== JSON.stringify(messages[messages.length - 1])) {
-                append(newMessages);
-              }
-            } catch (error) {
-              console.error("Failed to parse response:", error);
+      previewToken
+    },
+    onResponse(response) {
+      if (response.status === 401) {
+        toast.error(response.statusText)
+      } else {
+        response.text().then((text) => {
+          try {
+            const data = JSON.parse(text);
+            const newMessages = data.messages?.map((message: any) => ({
+              role: message.role,
+              content: message.content,
+            })) || ['kavo'];
+            // Check if the new messages are the same as the last message
+            if (JSON.stringify(newMessages) !== JSON.stringify(messages[messages.length - 1])) {
+              setMessages([...messages, ...newMessages]);
             }
-          });
-        }
-      },
-      onFinish() {
-        if (!path.includes('chat')) {
-          window.history.pushState({}, '', `/chat/${id}`)
-        }
+          } catch (error) {
+            console.error("Failed to parse response:", error);
+          }
+        });
       }
-    })
+    },
+    onFinish() {
+      if (!path.includes('chat')) {
+        window.history.pushState({}, '', `/chat/${id}`)
+      }
+    }
+  });
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
@@ -100,7 +142,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         setInput={setInput}
       />
 
-      <Dialog open={previewTokenDialog} onOpenChange={setPreviewTokenDialog}>
+      {/* <Dialog open={previewTokenDialog} onOpenChange={setPreviewTokenDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Enter your OpenAI Key</DialogTitle>
@@ -134,10 +176,13 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </>
   )
 }
+
+
+export default Chat;
 
 // export default function Completion({ id, initialMessages}: CompletionProps) {
 // 	const { completion, input, stop, isLoading, handleInputChange, handleSubmit } = useCompletion({

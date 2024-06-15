@@ -34,14 +34,15 @@ export async function POST(request: Request) {
     // Extract `messages` from the request body
     const { messages }: { messages: Message[] } = await request.json();
 
-    const response = await Hf.textGenerationStream({
-      //model: 'Avin0ff/distilgpt2QACode',
+    const prompt = buildPrompt(messages);
+    const response = await Hf.textGeneration({
       model: 'IlyaGusev/saiga_mistral_7b_gguf',
-      messages: [{ content: buildPrompt(messages) }],
+      prompt: prompt,
+      max_length: 2048,
     });
 
     // Convert the response to a string
-    const result = await response.toString();
+    const result = response.text;
 
     return NextResponse.json(result);
   } catch (error) {
