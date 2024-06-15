@@ -53,6 +53,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       onResponse(response) {
         if (response.status === 401) {
           toast.error(response.statusText)
+        }else {
+          response.text().then((newMessages) => {
+            append({ role: 'assistant', content: newMessages })
+          })
         }
       },
       onFinish() {
