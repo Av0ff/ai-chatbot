@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   // Extract the `messages` from the body of the request
   const { messages } = await req.json()
 
-  const response = await Hf.chatCompletionStream({
+  const response = await Hf.textGenerationStream({
     model: 'Avin0ff/distilgpt2QACode',
     messages: [{
       content: buildPompt(messages)
