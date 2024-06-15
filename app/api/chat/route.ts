@@ -39,6 +39,8 @@ export async function POST(request: Request) {
       model: 'IlyaGusev/saiga_mistral_7b_gguf',
       prompt: prompt,
       max_length: 2048,
+      temperature: 0.7, // Adjust the temperature parameter as needed
+      top_p: 0.9, // Adjust the top_p parameter as needed
     });
 
     // Convert the response to a string
@@ -50,7 +52,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-
 // export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 //   // Check the request method
 //   if (req.method!== 'POST') {
