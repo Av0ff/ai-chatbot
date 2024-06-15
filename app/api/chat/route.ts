@@ -36,12 +36,14 @@ export async function POST(request: Request) {
 
     const prompt = buildPrompt(messages);
     const response = await Hf.textGenerationStream({
-      model: 'IlyaGusev/saiga_mistral_7b_gguf',
+      model: 'IlyaGusev/rulm_gpt_neo_small',
       inputs: prompt,
       parameters: {
         max_length: 2048,
         temperature: 0.7, // Adjust the temperature parameter as needed
-        top_p: 0.9, // Adjust the top_p parameter as needed
+        top_p: 0.9,  // Adjust the top_p parameter as needed
+        wait_for_model: true, // Wait for the model to be ready
+        timeout: 60000, // Adjust the top_p parameter as needed
       },
     });
 
