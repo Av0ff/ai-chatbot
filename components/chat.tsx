@@ -60,7 +60,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
               const newMessages = data.messages?.map((message: any) => ({
                 role: message.role,
                 content: message.content,
-              })) || [];
+              })) || ['kavo'];
               append(newMessages);
             } catch (error) {
               console.error("Failed to parse response:", error);
