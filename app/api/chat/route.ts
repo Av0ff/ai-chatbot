@@ -1,6 +1,6 @@
 import { HfInference } from '@huggingface/inference';
 import { HuggingFaceStream, StreamingTextResponse } from 'ai';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
 // Create a new HuggingFace Inference instance
 const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
@@ -28,34 +28,26 @@ function buildPrompt(messages: Message[]) {
   );
 }
 
-// Обработчик API-маршрута
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  // Проверка метода запроса
-  if (req.method!== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  }
-
-  // Извлечение `messages` из тела запроса
-  const { messages }: { messages: Message[] } = req.body;
-
+// API route handler
+export async function POST(request: Request) {
   try {
+    // Extract `messages` from the request body
+    const { messages }: { messages: Message[] } = await request.json();
+
     const response = await Hf.textGenerationStream({
       model: 'Avin0ff/distilgpt2QACode',
       messages: [{ content: buildPrompt(messages) }],
     });
 
-    // Конвертация ответа в строку
-    const result = response.toString();
+    // Convert the response to a string
+    const result = await response.toString();
 
-    // Отправка результата в ответе
-    res.status(200).send(result);
+    return NextResponse.json(result);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-};
-
-export default handler;
+}
 
 // export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 //   // Check the request method
