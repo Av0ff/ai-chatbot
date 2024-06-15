@@ -28,17 +28,11 @@ export async function POST(req: Request) {
   // Extract the `messages` from the body of the request
   const { messages } = await req.json()
 
-  const response = await Hf.textGenerationStream({
+  const response = await Hf.chatCompletionStream({
     model: 'Avin0ff/distilgpt2QACode',
-    inputs: buildPompt(messages),
-    parameters: {
-      max_new_tokens: 200,
-      // @ts-ignore (this is a valid parameter specifically in OpenAssistant models)
-      typical_p: 0.2,
-      repetition_penalty: 1,
-      truncate: 1000,
-      return_full_text: false
-    }
+    messages: [{
+      content: buildPompt(messages)
+    }],
   })
 
   // Convert the response into a friendly text-stream
