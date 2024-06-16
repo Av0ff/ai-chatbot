@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
     const prompt = buildPrompt(messages);
     const response = await Hf.textGenerationStream({
-      model: 'IlyaGusev/rulm_gpt_neo_small',
+      model: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5',
       inputs: prompt,
       parameters: {
         max_length: 2048,
