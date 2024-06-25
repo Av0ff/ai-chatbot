@@ -36,10 +36,6 @@ To run the example locally you need to:
 
 [Hugging Face](https://huggingface.co) is company that develops tools for building applications using machine learning. It is most notable for its [Transformers](https://huggingface.co/docs/transformers/index) Python library built for natural language processing applications and its platform that allows users to share machine learning models and datasets.
 
-## About Open Assistant
-
-The model in the example is [Open Assistant SFT-4 12B](https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5). This is the 4th iteration English supervised-fine-tuning (SFT) model of the Open-Assistant project. It is based on a Pythia 12B that was fine-tuned on human demonstrations of assistant conversations collected through the [Open Assistant](https://open-assistant.io/) human feedback web app before March 25, 2023.
-
 ## Learn More
 
 To learn more about Hugging Face, Next.js, and the Vercel AI SDK take a look at the following resources:
@@ -47,6 +43,4 @@ To learn more about Hugging Face, Next.js, and the Vercel AI SDK take a look at 
 - [Vercel AI SDK docs](https://sdk.vercel.ai/docs)
 - [Vercel AI Playground](https://play.vercel.ai)
 - [Hugging Face Inference Documentation](https://huggingface.co/docs/huggingface.js/inference/README) - learn about Hugging Face Inference SDK features and API.
-- [Open-Assistant SFT-4 12B Model](https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5) - learn about the AI model in use
-- [Open Assistant Project](https://open-assistant.io/) - learn about the Open Assistant project
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
